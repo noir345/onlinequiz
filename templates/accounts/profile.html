@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль - Кино-Батл{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" class="rounded-circle mb-3" width="150" height="150" alt="Аватар">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 150px; height: 150px;">
+                            <i class="fas fa-user fa-3x text-white"></i>
+                        </div>
+                    {% endif %}
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted">@{{ user.username }}</p>
+                    
+                    <div class="row text-center mt-4">
+                        <div class="col-4">
+                            <h5 class="text-primary">{{ profile.total_quizzes_created }}</h5>
+                            <small class="text-muted">Создано</small>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="text-success">{{ profile.total_quizzes_participated }}</h5>
+                            <small class="text-muted">Участий</small>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="text-warning">{{ profile.total_score }}</h5>
+                            <small class="text-muted">Очков</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-edit"></i> Редактировать профиль</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Личная информация</h6>
+                                <div class="mb-3">
+                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">Имя</label>
+                                    {{ user_form.first_name }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+                                    {{ user_form.last_name }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
+                                    {{ user_form.email }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Профиль</h6>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">Аватар</label>
+                                    {{ profile_form.avatar }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.bio.id_for_label }}" class="form-label">О себе</label>
+                                    {{ profile_form.bio }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Кино-Батл{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">Добро пожаловать в Кино-Батл!</h1>
+        <p class="lead mb-4">Создавайте викторины о кино, участвуйте в соревнованиях и проверяйте свои знания!</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'quiz:join_quiz' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-play"></i> Присоединиться к викторине
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'quiz:create_quiz' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-plus"></i> Создать викторину
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="mb-4">Популярные викторины</h2>
+            <div class="row">
+                {% for quiz in popular_quizzes %}
+                <div class="col-md-6 mb-3">
+                    <div class="card quiz-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.title }}</h5>
+                            <p class="card-text">{{ quiz.description|truncatewords:15 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-user"></i> {{ quiz.creator.username }}
+                                </small>
+                                <a href="{% url 'quiz:quiz_detail' quiz.id %}" class="btn btn-primary btn-sm">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">Популярные викторины пока не созданы.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h2 class="mb-4">Новые викторины</h2>
+            <div class="row">
+                {% for quiz in recent_quizzes %}
+                <div class="col-md-6 mb-3">
+                    <div class="card quiz-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.title }}</h5>
+                            <p class="card-text">{{ quiz.description|truncatewords:15 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> {{ quiz.created_at|date:"d.m.Y" }}
+                                </small>
+                                <a href="{% url 'quiz:quiz_detail' quiz.id %}" class="btn btn-primary btn-sm">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">Новые викторины пока не созданы.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-film fa-3x text-primary mb-3"></i>
+                    <h4>Создавайте викторины</h4>
+                    <p class="text-muted">Создавайте интересные викторины о кино с вопросами, изображениями и видео.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h4>Играйте вместе</h4>
+                    <p class="text-muted">Присоединяйтесь к викторинам в реальном времени и соревнуйтесь с другими участниками.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
+                    <h4>Зарабатывайте очки</h4>
+                    <p class="text-muted">Набирайте очки за правильные ответы и поднимайтесь в рейтинге.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

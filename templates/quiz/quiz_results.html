@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты - {{ session.quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-trophy"></i> Результаты викторины</h3>
+                    <h4 class="text-primary">{{ session.quiz.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                    <h5>{{ participants.count }}</h5>
+                                    <small class="text-muted">Участников</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-question-circle fa-2x text-success mb-2"></i>
+                                    <h5>{{ session.quiz.questions.count }}</h5>
+                                    <small class="text-muted">Вопросов</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                    <h5>{{ session.quiz.time_per_question }}с</h5>
+                                    <small class="text-muted">На вопрос</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Рейтинг участников</h5>
+                    <div class="list-group">
+                        {% for participant in participants %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center {% if participant == current_participant %}bg-light{% endif %}">
+                            <div class="d-flex align-items-center">
+                                {% if forloop.first %}
+                                    <i class="fas fa-crown text-warning me-3"></i>
+                                {% elif forloop.counter == 2 %}
+                                    <i class="fas fa-medal text-secondary me-3"></i>
+                                {% elif forloop.counter == 3 %}
+                                    <i class="fas fa-award text-warning me-3"></i>
+                                {% else %}
+                                    <span class="badge bg-secondary me-3">{{ forloop.counter }}</span>
+                                {% endif %}
+                                
+                                <div>
+                                    <h6 class="mb-0">{{ participant.nickname }}</h6>
+                                    {% if participant.user %}
+                                        <small class="text-muted">@{{ participant.user.username }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="text-end">
+                                <span class="badge bg-primary fs-6">{{ participant.score }}</span>
+                                <br>
+                                <small class="text-muted">
+                                    {{ participant.score|floatformat:0 }}/{{ session.quiz.questions.count }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if current_participant %}
+                    <div class="alert alert-info mt-4">
+                        <h6><i class="fas fa-user"></i> Ваш результат</h6>
+                        <p class="mb-0">
+                            Вы заняли <strong>{{ current_participant.rank }}</strong> место с результатом 
+                            <strong>{{ current_participant.score }}</strong> из {{ session.quiz.questions.count }} возможных очков.
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'quiz:home' %}" class="btn btn-primary me-2">
+                            <i class="fas fa-home"></i> На главную
+                        </a>
+                        <a href="{% url 'quiz:join_quiz' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-play"></i> Играть еще
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

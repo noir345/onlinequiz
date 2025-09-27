@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} - Кино-Батл{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card quiz-session-card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ quiz.title }}</h2>
+                    <p class="card-text">{{ quiz.description }}</p>
+                    
+                    <div class="row text-center mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-question-circle fa-2x text-primary mb-2"></i>
+                                    <h5>{{ quiz.questions.count }}</h5>
+                                    <small class="text-muted">Вопросов</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-clock fa-2x text-success mb-2"></i>
+                                    <h5>{{ quiz.time_per_question }}с</h5>
+                                    <small class="text-muted">На вопрос</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-2x text-warning mb-2"></i>
+                                    <h5>{{ quiz.creator.username }}</h5>
+                                    <small class="text-muted">Создатель</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+                                    <h5>{{ quiz.created_at|date:"d.m.Y" }}</h5>
+                                    <small class="text-muted">Создана</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if quiz.questions.exists %}
+                    <div class="d-grid gap-2">
+                        {% if user == quiz.creator %}
+                        <a href="{% url 'quiz:start_quiz_session' quiz.id %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-play"></i> Запустить викторину
+                        </a>
+                        {% else %}
+                        <a href="{% url 'quiz:join_quiz' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Присоединиться к викторине
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        В этой викторине пока нет вопросов.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Информация</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Код викторины:</strong> <span class="badge bg-primary">{{ quiz.code }}</span></p>
+                    <p><strong>Статус:</strong> 
+                        {% if quiz.is_active %}
+                            <span class="badge bg-success">Активна</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Неактивна</span>
+                        {% endif %}
+                    </p>
+                    
+                    {% if user == quiz.creator %}
+                    <hr>
+                    <h6>Управление:</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'quiz:add_questions' quiz.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-plus"></i> Добавить вопросы
+                        </a>
+                        <a href="{% url 'quiz:edit_quiz' quiz.id %}" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </a>
+                        <a href="{% url 'quiz:delete_quiz' quiz.id %}" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-trash"></i> Удалить
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

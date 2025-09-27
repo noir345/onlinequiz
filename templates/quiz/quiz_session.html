@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Сессия - {{ session.quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card quiz-session-card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-play"></i> {{ session.quiz.title }}</h3>
+                    <p class="mb-0">Код сессии: <span class="badge bg-primary fs-6">{{ session.session_code }}</span></p>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                    <h5>{{ participants.count }}</h5>
+                                    <small class="text-muted">Участников</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-question-circle fa-2x text-success mb-2"></i>
+                                    <h5>{{ session.quiz.questions.count }}</h5>
+                                    <small class="text-muted">Вопросов</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                    <h5>{{ session.quiz.time_per_question }}с</h5>
+                                    <small class="text-muted">На вопрос</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Участники:</h5>
+                    <div class="participants-list">
+                        {% for participant in participants %}
+                        <div class="participant-item d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                            <div>
+                                <strong>{{ participant.nickname }}</strong>
+                                {% if participant.user %}
+                                    <br><small class="text-muted">@{{ participant.user.username }}</small>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-primary">{{ participant.score }}</span>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted text-center">Участники пока не присоединились</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Поделитесь кодом сессии с участниками:</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" value="{{ session.session_code }}" readonly id="session-code">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyCode()">
+                                <i class="fas fa-copy"></i> Копировать
+                            </button>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'quiz:play_quiz' session.session_code %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-play"></i> Начать викторину
+                            </a>
+                            <a href="{% url 'quiz:home' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> На главную
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyCode() {
+    const codeInput = document.getElementById('session-code');
+    codeInput.select();
+    codeInput.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
+    button.classList.remove('btn-outline-secondary');
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+    }, 2000);
+}
+</script>
+{% endblock %}

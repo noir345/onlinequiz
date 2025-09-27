@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Удаление викторины</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-warning"></i>
+                        <strong>Внимание!</strong> Это действие нельзя отменить.
+                    </div>
+                    
+                    <h5>Вы действительно хотите удалить викторину?</h5>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ quiz.title }}</h6>
+                            <p class="card-text">{{ quiz.description|truncatewords:20 }}</p>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="fas fa-question-circle"></i><br>
+                                        {{ quiz.questions.count }} вопросов
+                                    </small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i><br>
+                                        {{ quiz.time_per_question }}с
+                                    </small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar"></i><br>
+                                        {{ quiz.created_at|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'quiz:my_quizzes' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Удалить викторину
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

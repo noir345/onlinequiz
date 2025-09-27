@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои викторины - Кино-Батл{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user"></i> Мои викторины</h2>
+        <a href="{% url 'quiz:create_quiz' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Создать викторину
+        </a>
+    </div>
+    
+    {% if quizzes %}
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card quiz-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ quiz.title }}</h5>
+                    <p class="card-text">{{ quiz.description|truncatewords:15 }}</p>
+                    
+                    <div class="row text-center mb-3">
+                        <div class="col-4">
+                            <small class="text-muted">
+                                <i class="fas fa-question-circle"></i><br>
+                                {{ quiz.questions.count }}
+                            </small>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i><br>
+                                {{ quiz.time_per_question }}с
+                            </small>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">
+                                <i class="fas fa-code"></i><br>
+                                {{ quiz.code }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            {{ quiz.created_at|date:"d.m.Y" }}
+                        </small>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'quiz:quiz_detail' quiz.id %}" class="btn btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'quiz:add_questions' quiz.id %}" class="btn btn-outline-success">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a href="{% url 'quiz:edit_quiz' quiz.id %}" class="btn btn-outline-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'quiz:delete_quiz' quiz.id %}" class="btn btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">У вас пока нет викторин</h4>
+        <p class="text-muted">Создайте свою первую викторину и поделитесь ею с друзьями!</p>
+        <a href="{% url 'quiz:create_quiz' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus"></i> Создать викторину
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
